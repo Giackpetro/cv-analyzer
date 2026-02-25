@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Skill{% endblock %}
+
+{% block content %}
+  <h1>Skill</h1>
+
+  <form method="post" class="card">
+    <label>Aggiungi skill</label>
+    <div style="display:flex; gap:10px;">
+      <input type="text" name="name" placeholder="es. Python, SQL, Git..." style="flex:1;" />
+      <button type="submit">Aggiungi</button>
+    </div>
+  </form>
+
+  <div style="height:14px;"></div>
+
+  <div class="card">
+    <h2 style="margin:0;">Lista skill</h2>
+
+    {% if skills|length == 0 %}
+      <p>Nessuna skill ancora.</p>
+    {% else %}
+      <ul>
+        {% for s in skills %}
+          <li style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+            <span>{{ s.name }}</span>
+            <form method="post" action="{{ url_for('delete_skill', skill_id=s.id) }}">
+              <button type="submit" style="background:#b33; color:#fff;">Elimina</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+{% endblock %}

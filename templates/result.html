@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Risultato{% endblock %}
+
+{% block content %}
+<h1>Compatibilità</h1>
+
+<div class="card">
+  <h2>{{ score }} %</h2>
+</div>
+
+<p>Dettaglio: Skill {{ skill_score }}% — Contesto {{ tfidf_score }}%</p>
+
+<div class="card">
+  <h3>Skill richieste (dall’annuncio)</h3>
+  {% if required_skills|length == 0 %}
+    <p>Non ho riconosciuto skill “note” nell’annuncio.</p>
+  {% else %}
+    <ul>
+      {% for s in required_skills %}
+        <li>• {{ s }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3>Skill mancanti</h3>
+  {% if missing|length == 0 %}
+    <p>Nessuna.</p>
+  {% else %}
+    <ul>
+      {% for s in missing %}
+        <li>❌ {{ s }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
+{% endblock %}

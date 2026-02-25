@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Profilo{% endblock %}
+
+{% block content %}
+  <h1>Profilo</h1>
+
+  {% if saved %}
+    <div class="ok">Salvato.</div>
+  {% endif %}
+
+  <form method="post" class="card">
+    <label>Nome</label>
+    <input type="text" name="name" value="{{ profile.name }}" />
+
+    <label>Email</label>
+    <input type="email" name="email" value="{{ profile.email }}" />
+
+    <label>Descrizione (summary)</label>
+    <textarea name="summary" rows="6">{{ profile.summary }}</textarea>
+
+    <button type="submit">Salva</button>
+  </form>
+{% endblock %}
+
+    
