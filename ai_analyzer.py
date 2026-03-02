@@ -142,7 +142,11 @@ def analyze(cv_text: str, job_text: str, user_skills: list[str]):
     required_skills = list(dict.fromkeys(req_skills + nice_skills))
 
     # --- Matching con pesi ---
-    user_norm = {normalize(s) for s in user_skills}
+    # Skill utente = skill inserite + skill trovate nel testo CV (stesso peso)
+    cv_found_skills = find_required_skills(cv_text)
+    cv_found_skills = list(dict.fromkeys(cv_found_skills))  # dedup
+
+    user_norm = {normalize(s) for s in (user_skills + cv_found_skills)}
 
     matching = []
     missing = []
@@ -175,7 +179,6 @@ def analyze(cv_text: str, job_text: str, user_skills: list[str]):
         skill_score = 0.0
 
     # --- Score finale ---
-    # Se abbiamo skill (req/nice), usiamo 70/30. Altrimenti solo TF-IDF.
     if weighted_total > 0:
         final_score = 0.70 * skill_score + 0.30 * tfidf_score
     else:
@@ -192,4 +195,5 @@ def analyze(cv_text: str, job_text: str, user_skills: list[str]):
         round(tfidf_score, 2),
         round(skill_score, 2),
         required_skills,
+        cv_found_skills,
     )

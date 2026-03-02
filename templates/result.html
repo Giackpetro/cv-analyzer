@@ -11,17 +11,17 @@
 <p>Dettaglio: Skill {{ skill_score }}% — Contesto {{ tfidf_score }}%</p>
 
 <div class="card">
-  <h3>Skill richieste (dall’annuncio)</h3>
-  {% if required_skills|length == 0 %}
-    <p>Non ho riconosciuto skill “note” nell’annuncio.</p>
-  {% else %}
-    <ul>
-      {% for s in required_skills %}
-        <li>• {{ s }}</li>
+  <h3>Skill trovate automaticamente nel CV</h3>
+  {% if cv_found_skills %}
+      <ul>
+      {% for s in cv_found_skills %}
+          <li>{{ s }}</li>
       {% endfor %}
-    </ul>
+      </ul>
+  {% else %}
+      <p>Nessuna skill riconosciuta nel testo del CV.</p>
   {% endif %}
-</div>
+  </div>
 
 <div class="card">
   <h3>Skill mancanti</h3>

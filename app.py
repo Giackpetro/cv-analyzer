@@ -61,7 +61,7 @@ def analyze_page():
 
         cv_text = (p.summary or "") + " " + " ".join(skill_names)
 
-        final_score, matching, missing, tfidf_score, skill_score, required_skills = analyze(
+        final_score, matching, missing, tfidf_score, skill_score, required_skills, cv_found_skills = analyze(
             cv_text, job_text, skill_names
         )
 
