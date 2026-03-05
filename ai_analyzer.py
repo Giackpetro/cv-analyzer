@@ -2,8 +2,7 @@ import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Lista "nota" di skill da cercare negli annunci (puoi ampliarla quando vuoi)
-# Nota: metti le skill multi-parola prima di quelle singole quando hanno overlap.
+# Lista "nota" di skill da cercare negli annunci
 KNOWN_SKILLS = [
     "python", "java", "c", "c++", "c#",
     "javascript", "typescript",
@@ -120,6 +119,35 @@ def split_sections(job_text: str):
 
     return req_text, nice_text
 
+def find_skills_in_text(text: str) -> list[str]:
+    text_norm = normalize(text)
+    tokens = set(text_norm.split())
+    found = []
+
+    for skill in KNOWN_SKILLS:
+        s_norm = normalize(skill)
+
+        if " " in s_norm:
+            if s_norm in text_norm:
+                found.append(skill)
+        else:
+            if s_norm in tokens:
+                found.append(skill)
+
+    # dedup preservando ordine (ma per confronto uso normalize)
+    seen = set()
+    dedup = []
+    for s in found:
+        key = normalize(s)
+        if key not in seen:
+            seen.add(key)
+            dedup.append(s)
+
+    # ✅ rimuove overlap: se c'è "rest api" elimina "rest" e "api"
+    dedup = remove_overlaps(dedup)
+
+    return dedup
+
 def analyze(cv_text: str, job_text: str, user_skills: list[str]):
     # --- TF-IDF similarity (0-100) ---
     vectorizer = TfidfVectorizer(stop_words=None)
@@ -143,7 +171,7 @@ def analyze(cv_text: str, job_text: str, user_skills: list[str]):
 
     # --- Matching con pesi ---
     # Skill utente = skill inserite + skill trovate nel testo CV (stesso peso)
-    cv_found_skills = find_required_skills(cv_text)
+    cv_found_skills = find_skills_in_text(cv_text)
     cv_found_skills = list(dict.fromkeys(cv_found_skills))  # dedup
 
     user_norm = {normalize(s) for s in (user_skills + cv_found_skills)}

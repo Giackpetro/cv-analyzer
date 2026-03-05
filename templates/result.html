@@ -1,38 +1,93 @@
 {% extends "base.html" %}
-{% block title %}Risultato{% endblock %}
+{% block title %}Risultato • CV Analyzer{% endblock %}
 
 {% block content %}
-<h1>Compatibilità</h1>
+  <h1>Risultato</h1>
 
-<div class="card">
-  <h2>{{ score }} %</h2>
-</div>
+  <div class="card">
+    <div class="kpi">
+      <div class="value">{{ score }}%</div>
+      <div class="sub">Compatibilità finale (70% skill + 30% contesto)</div>
+    </div>
 
-<p>Dettaglio: Skill {{ skill_score }}% — Contesto {{ tfidf_score }}%</p>
+    <div style="height:10px"></div>
 
-<div class="card">
-  <h3>Skill trovate automaticamente nel CV</h3>
-  {% if cv_found_skills %}
-      <ul>
-      {% for s in cv_found_skills %}
-          <li>{{ s }}</li>
-      {% endfor %}
-      </ul>
-  {% else %}
-      <p>Nessuna skill riconosciuta nel testo del CV.</p>
-  {% endif %}
+    <div class="progress" aria-label="Compatibilità">
+      <div style="width: {{ score }}%;"></div>
+    </div>
+
+    <div style="height:12px"></div>
+
+    <div class="pills">
+      <span class="pill ok">Skill: {{ skill_score }}%</span>
+      <span class="pill neutral">Contesto: {{ tfidf_score }}%</span>
+      <span class="pill neutral">Skill richieste: {{ required_skills|length }}</span>
+    </div>
   </div>
 
-<div class="card">
-  <h3>Skill mancanti</h3>
-  {% if missing|length == 0 %}
-    <p>Nessuna.</p>
-  {% else %}
-    <ul>
-      {% for s in missing %}
-        <li>❌ {{ s }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-</div>
+  <div style="height:14px"></div>
+
+  <div class="grid cols-2">
+    <div class="card">
+      <h3>Skill richieste (dall’annuncio)</h3>
+      {% if required_skills|length == 0 %}
+        <p>Non ho riconosciuto skill “note” nell’annuncio.</p>
+      {% else %}
+        <div class="pills">
+          {% for s in required_skills %}
+            <span class="pill neutral">{{ s }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h3>Skill trovate nel CV (auto)</h3>
+      {% if cv_found_skills %}
+        <div class="pills">
+          {% for s in cv_found_skills %}
+            <span class="pill ok">{{ s }}</span>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p>Nessuna skill riconosciuta nel testo del CV.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div style="height:14px"></div>
+
+  <div class="grid cols-2">
+    <div class="card">
+      <h3>Match (richieste che hai)</h3>
+      {% if matching|length == 0 %}
+        <p>Nessuna.</p>
+      {% else %}
+        <div class="pills">
+          {% for s in matching %}
+            <span class="pill ok">✅ {{ s }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h3>Mancanti (richieste che non hai)</h3>
+      {% if missing|length == 0 %}
+        <p>Nessuna.</p>
+      {% else %}
+        <div class="pills">
+          {% for s in missing %}
+            <span class="pill bad">❌ {{ s }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div style="height:14px"></div>
+  <div class="actions">
+    <a class="btn secondary" href="{{ url_for('analyze_page') }}">Nuova analisi</a>
+    <a class="btn secondary" href="{{ url_for('skills') }}">Aggiorna skill</a>
+  </div>
 {% endblock %}

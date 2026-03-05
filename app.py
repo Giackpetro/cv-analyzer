@@ -11,7 +11,7 @@ db.init_app(app)
 
 @app.route("/")
 def home():
-    return render_template("base.html")
+    return render_template("home.html")
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
@@ -34,9 +34,12 @@ def profile():
 @app.route("/skills", methods=["GET", "POST"])
 def skills():
     if request.method == "POST":
-        name = request.form.get("name", "").strip()
-        if name:
-            db.session.add(Skill(name=name))
+        raw = request.form.get("name", "").strip()
+        if raw:
+            # Permette anche di inserire più skill separate da virgola
+            parts = [p.strip() for p in raw.split(",") if p.strip()]
+            for name in parts:
+                db.session.add(Skill(name=name))
             db.session.commit()
         return redirect(url_for("skills"))
 
@@ -62,7 +65,7 @@ def analyze_page():
         cv_text = (p.summary or "") + " " + " ".join(skill_names)
 
         final_score, matching, missing, tfidf_score, skill_score, required_skills, cv_found_skills = analyze(
-            cv_text, job_text, skill_names
+        cv_text, job_text, skill_names
         )
 
         return render_template(
@@ -72,7 +75,8 @@ def analyze_page():
             missing=missing,
             tfidf_score=tfidf_score,
             skill_score=skill_score,
-            required_skills=required_skills
+            required_skills=required_skills,
+            cv_found_skills=cv_found_skills
         )
 
     # GET: mostro solo il form

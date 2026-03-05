@@ -1,14 +1,23 @@
 {% extends "base.html" %}
-{% block title %}Analizza{% endblock %}
+{% block title %}Analizza • CV Analyzer{% endblock %}
 
 {% block content %}
-<h1>Analizza job description</h1>
+  <h1>Analizza</h1>
 
-<form method="post" class="card">
-  <label>Incolla job description</label>
-  <textarea name="job" rows="8"></textarea>
+  <div class="card soft">
+    <span class="badge">Tip</span>
+    <span class="badge">Incolla un annuncio completo (requisiti, nice to have, responsabilità)</span>
+  </div>
 
-  <button type="submit">Analizza</button>
-</form>
+  <div style="height:12px"></div>
 
+  <form method="post" class="card">
+    <label>Job description</label>
+    <textarea name="job" rows="10" placeholder="Incolla qui l'annuncio di lavoro..."></textarea>
+
+    <div class="actions">
+      <button class="btn" type="submit">Analizza</button>
+      <a class="btn secondary" href="{{ url_for('skills') }}">Gestisci skill</a>
+    </div>
+  </form>
 {% endblock %}

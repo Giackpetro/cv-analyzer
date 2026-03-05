@@ -1,25 +1,35 @@
 {% extends "base.html" %}
-{% block title %}Profilo{% endblock %}
+{% block title %}Profilo • CV Analyzer{% endblock %}
 
 {% block content %}
   <h1>Profilo</h1>
 
   {% if saved %}
-    <div class="ok">Salvato.</div>
+    <div class="alert">Salvato.</div>
+    <div style="height:10px"></div>
   {% endif %}
 
   <form method="post" class="card">
-    <label>Nome</label>
-    <input type="text" name="name" value="{{ profile.name }}" />
+    <div class="grid cols-2">
+      <div>
+        <label>Nome</label>
+        <input type="text" name="name" value="{{ profile.name }}" placeholder="Il tuo nome" />
+      </div>
+      <div>
+        <label>Email</label>
+        <input type="email" name="email" value="{{ profile.email }}" placeholder="nome@email.com" />
+      </div>
+    </div>
 
-    <label>Email</label>
-    <input type="email" name="email" value="{{ profile.email }}" />
+    <div>
+      <label>Descrizione (summary)</label>
+      <textarea name="summary" rows="6" placeholder="2-4 righe su di te (ruolo, esperienza, interessi)">{{ profile.summary }}</textarea>
+      <p style="margin-top:8px">Suggerimento: scrivi tecnologie e attività (es. “sviluppo API”, “data analysis”).</p>
+    </div>
 
-    <label>Descrizione (summary)</label>
-    <textarea name="summary" rows="6">{{ profile.summary }}</textarea>
-
-    <button type="submit">Salva</button>
+    <div class="actions">
+      <button class="btn" type="submit">Salva</button>
+      <a class="btn secondary" href="{{ url_for('skills') }}">Vai alle skill</a>
+    </div>
   </form>
 {% endblock %}
-
-    
